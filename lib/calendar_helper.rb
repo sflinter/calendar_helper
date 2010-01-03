@@ -93,7 +93,7 @@ module CalendarHelper
     first_weekday = first_day_of_week(options[:first_day_of_week])
     last_weekday = last_day_of_week(options[:first_day_of_week])
     
-    day_names = Date::DAYNAMES.dup
+    day_names = translated_day_names.dup
     first_weekday.times do
       day_names.push(day_names.shift)
     end
@@ -110,7 +110,7 @@ module CalendarHelper
       else
         colspan=7
       end
-      cal << %(<th colspan="#{colspan}" class="#{options[:month_name_class]}">#{Date::MONTHNAMES[options[:month]]}</th>)
+      cal << %(<th colspan="#{colspan}" class="#{options[:month_name_class]}">#{translated_month_names(options[:month])}</th>)
       cal << %(<th colspan="2">#{options[:next_month_text]}</th>) if options[:next_month_text]
       cal << %(</tr>)
     end
@@ -129,7 +129,7 @@ module CalendarHelper
       cal << %(<td class="#{options[:other_month_class]})
       cal << " weekendDay" if weekend?(d)
       if options[:accessible]
-        cal << %(">#{d.day}<span class="hidden"> #{Date::MONTHNAMES[d.month]}</span></td>)
+        cal << %(">#{d.day}<span class="hidden"> #{translated_month_names(d.month)}</span></td>)
       else
         cal << %(">#{d.day}</td>)
       end
@@ -150,7 +150,7 @@ module CalendarHelper
       cal << %(<td class="#{options[:other_month_class]})
       cal << " weekendDay" if weekend?(d)
       if options[:accessible]
-        cal << %(">#{d.day}<span class='hidden'> #{Date::MONTHNAMES[d.mon]}</span></td>)
+        cal << %(">#{d.day}<span class='hidden'> #{translated_month_names(d.mon)}</span></td>)
       else
         cal << %(">#{d.day}</td>)        
       end
@@ -191,4 +191,11 @@ module CalendarHelper
     [0, 6].include?(date.wday)
   end
   
+  def translated_month_names(month_number)
+    I18n.t('date.month_names', :raise => true)[month_number] rescue Date::MONTHNAMES[month_number]
+  end
+  
+  def translated_day_names
+    I18n.t('date.day_names', :raise => true) rescue Date::DAYNAMES
+  end
 end
