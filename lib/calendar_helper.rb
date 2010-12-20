@@ -156,8 +156,7 @@ module CalendarHelper
       end
     end unless last.wday == last_weekday
     cal << "</tr></tbody></table>"
-    cal.html_safe!
-    cal
+    raw(cal)
   end
   
   private
